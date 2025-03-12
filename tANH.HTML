@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Posts và Authors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button, input, select {
+            margin: 5px;
+            padding: 5px;
+        }
+        #postsList, #authorsList {
+            list-style-type: none;
+            padding: 0;
+        }
+        .post, .author {
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quản lý Posts và Authors</h1>
+
+        <!-- Section hiển thị danh sách Posts -->
+        <div class="section">
+            <h2>Danh sách Posts</h2>
+            <ul id="postsList"></ul>
+        </div>
+
+        <!-- Section hiển thị danh sách Authors -->
+        <div class="section">
+            <h2>Danh sách Authors</h2>
+            <ul id="authorsList"></ul>
+        </div>
+
+        <!-- Form tạo Post mới -->
+        <div class="section">
+            <h2>Tạo Post Mới</h2>
+            <form id="createPostForm">
+                <input type="text" id="postTitle" placeholder="Tiêu đề bài viết" required>
+                <input type="number" id="postViews" placeholder="Số lượt xem" required>
+                <select id="postAuthor" required>
+                    <option value="">Chọn tác giả</option>
+                </select>
+                <label>
+                    <input type="checkbox" id="postPublished"> Đã xuất bản
+                </label>
+                <button type="submit">Tạo Post</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000';
+
+        // Hiển thị danh sách Posts
+        async function fetchPosts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/posts`);
+                const posts = await response.json();
+                const postsList = document.getElementById('postsList');
+                postsList.innerHTML = '';
+                posts.forEach(post => {
+                    const li = document.createElement('li');
+                    li.className = 'post';
+                    li.innerHTML = `
+                        ID: ${post.id}, Tiêu đề: ${post.title}, Tác giả: ${post.author}, 
+                        Lượt xem: ${post.views}, Xuất bản: ${post.isPublished ? 'Có' : 'Không'}
+                        <button onclick="deletePost('${post.id}')">Xóa</button>
+                        <button onclick="editPost('${post.id}')">Sửa</button>
+                    `;
+                    postsList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Lỗi khi lấy posts:', error);
+            }
+        }
+
+        // Hiển thị danh sách Authors
+        async function fetchAuthors() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/authors`);
+                const authors = await response.json();
+                const authorsList = document.getElementById('authorsList');
+                authorsList.innerHTML = '';
+                authors.forEach(author => {
+                    const li = document.createElement('li');
+                    li.className = 'author';
+                    li.innerHTML = `
+                        ID: ${author.id}, Tên: ${author.name}, Số bài viết: ${author.postCount}
+                        <button onclick="deleteAuthor('${author.id}')">Xóa</button>
+                    `;
+                    authorsList.appendChild(li);
+                });
+
+                // Cập nhật dropdown với danh sách tác giả
+                const authorSelect = document.getElementById('postAuthor');
+                authors.forEach(author => {
+                    const option = document.createElement('option');
+                    option.value = author.name;
+                    option.textContent = `${author.name} (ID: ${author.id})`;
+                    authorSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Lỗi khi lấy authors:', error);
+            }
+        }
+
+        // Tạo Post mới
+        document.getElementById('createPostForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('postTitle').value;
+            const views = document.getElementById('postViews').value;
+            const author = document.getElementById('postAuthor').value;
+            const isPublished = document.getElementById('postPublished').checked;
+
+            try {
+                await fetch(`${API_BASE_URL}/posts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, author, views, isPublished })
+                });
+                fetchPosts(); // Cập nhật lại danh sách posts
+                document.getElementById('createPostForm').reset();
+            } catch (error) {
+                console.error('Lỗi khi tạo post:', error);
+            }
+        });
+
+        // Xóa Post
+        async function deletePost(postId) {
+            if (confirm('Bạn có chắc muốn xóa post này?')) {
+                try {
+                    await fetch(`${API_BASE_URL}/posts/${postId}`, { method: 'DELETE' });
+                    fetchPosts(); // Cập nhật lại danh sách posts
+                } catch (error) {
+                    console.error('Lỗi khi xóa post:', error);
+                }
+            }
+        }
+
+        // Xóa Author
+        async function deleteAuthor(authorId) {
+            if (confirm('Bạn có chắc muốn xóa tác giả này?')) {
+                try {
+                    await fetch(`${API_BASE_URL}/authors/${authorId}`, { method: 'DELETE' });
+                    fetchAuthors(); // Cập nhật lại danh sách authors
+                    fetchPosts(); // Cập nhật lại danh sách posts (nếu có liên quan)
+                } catch (error) {
+                    console.error('Lỗi khi xóa author:', error);
+                }
+            }
+        }
+
+        // Hàm chỉnh sửa Post (cơ bản, có thể mở rộng với form chỉnh sửa)
+        async function editPost(postId) {
+            alert('Chức năng chỉnh sửa đang được phát triển. Vui lòng dùng API trực tiếp để cập nhật.');
+            // Bạn có thể mở rộng bằng cách tạo form popup để chỉnh sửa post
+        }
+
+        // Load dữ liệu ban đầu khi trang được tải
+        window.onload = () => {
+            fetchPosts();
+            fetchAuthors();
+        };
+    </script>
+</body>
+</html>
