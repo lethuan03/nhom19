@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Lê Văn Thuận</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: black;
+        }
+        .navbar h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: #ff5733;
+        }
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 50px;
+        }
+        .text-content {
+            max-width: 50%;
+        }
+        .text-content h1 {
+            font-size: 50px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        .text-content p {
+            font-size: 20px;
+            font-weight: 400;
+            color: #b3b3b3;
+        }
+        .highlight {
+            color: #ff5733;
+        }
+        .contact-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #ff5733;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .contact-btn:hover {
+            background: #e64a19;
+        }
+        .profile-image img {
+            width: 400px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h2>Lê Văn Thuận</h2>
+        <div class="nav-links">
+            <a href="#">Kinh Nghiệm</a>
+            <a href="#">Dự Án</a>
+            <a href="#">Hợp Tác</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="text-content">
+            <h1>I'm Lê Văn Thuận, <br>A <span class="highlight">Kĩ sư phần mềmmềm</span></h1>
+            <p>Đang theo học tại đại họchọc <strong>HUTECH</strong>,chuyên ngànhngành <strong>Công nghệ thông tin</strong>. 
+              Tôi đã hoàn thành tốt các môn học liên quan đến lập trình và thông thạo java script và c#</p>
+            <a href="#" class="contact-btn">Liên hệ với tôi</a>
+        </div>
+        <div class="profile-image">
+            <image src = "https://www.hutech.edu.vn/homepage/tin-hutech/14623960-hutech-30-nam-tu-tinh-nhung-nam-thang-cung-hutech" > </image>
+        </div>
+    </div>
+</body>
+</html>
